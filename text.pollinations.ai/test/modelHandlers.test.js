@@ -1,5 +1,19 @@
 import test from 'ava';
-import { getHandler, modelHandlers } from '../availableModels.js';
+import { getHandler, availableModels } from '../availableModels.js';
+
+// Create the modelHandlers object for testing purposes, as it's no longer exported directly.
+const modelHandlers = availableModels.reduce((acc, model) => {
+    acc[model.name] = model.handler;
+    if (model.aliases) {
+        // Handle single alias string or array of aliases
+        const aliases = Array.isArray(model.aliases) ? model.aliases : [model.aliases];
+        aliases.forEach(alias => {
+            acc[alias] = model.handler;
+        });
+    }
+    return acc;
+}, {});
+
 
 /**
  * Test suite for the model handlers

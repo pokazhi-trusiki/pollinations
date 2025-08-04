@@ -3,7 +3,7 @@ import { createOpenAICompatibleClient } from './genericOpenAIClient.js';
 import debug from 'debug';
 import googleCloudAuth from './auth/googleCloudAuth.js';
 import { extractApiVersion, extractDeploymentName, extractResourceName, generatePortkeyHeaders } from './portkeyUtils.js';
-import { findModelByName } from './availableModels.js';
+// import { findModelByName } from './availableModels.js'; // Removed to break circular dependency
 
 dotenv.config();
 
@@ -550,6 +550,9 @@ export const generateTextPortkey = createOpenAICompatibleClient({
     // Transform request to add Azure-specific headers based on the model
     transformRequest: async (requestBody) => {
         try {
+            // Dynamically import to break circular dependency
+            const { findModelByName } = await import('./availableModels.js');
+
             // Get the model name from the request (already mapped by genericOpenAIClient)
             const modelName = requestBody.model; // This is already mapped by genericOpenAIClient
 
